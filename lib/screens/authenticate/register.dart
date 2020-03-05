@@ -14,10 +14,12 @@ class Register extends StatefulWidget {
 class _RegisterState extends State<Register> {
 
   final AuthService _auth = AuthService();
+  final _formKey = GlobalKey<FormState>();
 
   //textField state
   String email = '';
   String password = '';
+  String error = '';
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +36,12 @@ class _RegisterState extends State<Register> {
       body: Container(
         padding: EdgeInsets.symmetric(vertical: 20, horizontal: 50),
         child: Form(
+          key: _formKey,
           child: Column(
             children: <Widget>[
               SizedBox(height: 20),
               TextFormField(
+                validator: (val) => val.isEmpty ? 'Enter an email' : null,
                 onChanged: (val) {
                   setState(() => email = val);
                 },
@@ -45,6 +49,7 @@ class _RegisterState extends State<Register> {
               SizedBox(height: 20),
               TextFormField(
                 obscureText: true,
+                validator: (val) => val.length < 6 ? 'Enter a password at least 6 char long' : null,
                 onChanged: (val) {
                   setState(() => password = val);
                 },
@@ -57,10 +62,16 @@ class _RegisterState extends State<Register> {
                   style: TextStyle(color: Colors.white),
                 ),
                 onPressed: () async {
-                  print(email);
-                  print(password);
+                  if (_formKey.currentState.validate()) {
+                    dynamic _result = await _auth.registerWithEmailAndPassword(email, password);
+                    if (_result == null) {
+                      setState(() => error = 'Oh! Crap!');
+                    }
+                  }
                 },
-              )
+              ),
+              SizedBox(height: 12,),
+              Text(error, style: TextStyle(color: Colors.red, fontSize: 14),)
             ],
           ),
         )
