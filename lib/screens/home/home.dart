@@ -1,3 +1,4 @@
+import 'package:brewcrew/modules/brew.dart';
 import 'package:brewcrew/screens/home/brew_list.dart';
 import 'package:brewcrew/services/auth.dart';
 import 'package:brewcrew/services/database.dart';
@@ -11,7 +12,7 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return StreamProvider<QuerySnapshot>.value(
+    return StreamProvider<List<Brew>>.value(
       value: DatabaseService().brews,
       child: Scaffold(
         backgroundColor: Colors.brown[50],
